@@ -1,0 +1,38 @@
+docker run -p 3000:3000 -v /app/node_modules  -v $(pwd):/app <image_id>
+
+docker build -f Dockerfile.dev .
+
+
+
+To Run the test suite
+Option1 
+execute the command to run 
+docker exec -it <container_id> sh
+then run command npm run test
+or 
+
+from outside pass the command
+docker exec -it  ca52a6e6d7e1 npm run test
+
+
+Option 2 
+Using docker compose create a new service run the container directly
+version: '3'
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
+  tests:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ["npm","run","test"]
